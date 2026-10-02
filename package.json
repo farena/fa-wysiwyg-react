@@ -1,0 +1,88 @@
+{
+  "name": "@farena/fa-wysiwyg-react",
+  "version": "1.0.0",
+  "description": "Rich-text editor for React with a strict, stable HTML contract and DOMPurify-sanitized output",
+  "keywords": [
+    "react",
+    "react19",
+    "wysiwyg",
+    "rich-text",
+    "editor",
+    "contenteditable",
+    "html",
+    "dompurify",
+    "xss"
+  ],
+  "license": "MIT",
+  "author": "Federico Arena",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farena/fa-wysiwyg-react.git"
+  },
+  "homepage": "https://farena.github.io/fa-wysiwyg-react/",
+  "bugs": {
+    "url": "https://github.com/farena/fa-wysiwyg-react/issues"
+  },
+  "type": "module",
+  "main": "./dist/fa-wysiwyg.umd.cjs",
+  "module": "./dist/fa-wysiwyg.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/fa-wysiwyg.js",
+      "require": "./dist/fa-wysiwyg.umd.cjs"
+    },
+    "./style.css": "./dist/style.css",
+    "./scss": "./src/assets/fa-wysiwyg.scss",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
+  "files": [
+    "dist",
+    "src/assets/fa-wysiwyg.scss",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build && tsc -p tsconfig.lib.json",
+    "build:lab": "tsc -b && vite build --mode lab",
+    "lint": "eslint .",
+    "preview": "vite preview --outDir dist-lab",
+    "prepublishOnly": "npm run lint && npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^10.10.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.6",
+    "globals": "^17.12.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sass": "^1.105.1",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.69.0",
+    "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "dompurify": "^3.4.16"
+  }
+}

@@ -1,0 +1,664 @@
+// fa-wysiwyg
+//
+// Every variable the host can set carries a fallback, so the editor is fully
+// styled out of the box. Defining them in the host is what blends it into the
+// application's theme.
+//
+// Two prefixes: `.fa-wysiwyg__*` for anything inside the component, and
+// `.fa-wysiwyg-*` for what is portaled to <body> and therefore cannot nest.
+
+.fa-wysiwyg {
+  --fa-wysiwyg-font-size: 10px;
+  --fa-wysiwyg-btn-size: 2.3em;
+  --fa-wysiwyg-spacing-tiny: 0.18em;
+  --fa-wysiwyg-spacing-small: 0.3em;
+  --fa-wysiwyg-spacing: 0.6em;
+  --fa-wysiwyg-radius: var(--radius, 2px);
+  --fa-wysiwyg-border: hsl(220, 6%, 81%);
+  --fa-wysiwyg-bg: #fff;
+  --fa-wysiwyg-toolbar-bg: hsl(0, 0%, 98%);
+  --fa-wysiwyg-scrollbar: hsl(220, 6%, 70%);
+  --fa-wysiwyg-scrollbar-size: 0.5em;
+  --fa-wysiwyg-btn-hover-bg: hsl(0, 0%, 94.1%);
+  --fa-wysiwyg-btn-on-bg: hsl(212, 100%, 97.1%);
+  --fa-wysiwyg-btn-on-text: hsl(218.1, 100%, 58%);
+  --fa-wysiwyg-text: hsl(0, 0%, 20%);
+  --fa-wysiwyg-focus-ring: 1px solid var(--color-primary, hsl(218.1, 100%, 58%));
+  --fa-wysiwyg-shadow: 0 1px 2px 1px hsla(220, 6%, 10%, 0.15);
+
+  font-size: var(--fa-wysiwyg-font-size, 10px);
+  border: 1px solid var(--fa-wysiwyg-border, hsl(220, 6%, 81%));
+  border-radius: var(--fa-wysiwyg-radius, var(--radius, 2px));
+  background: var(--fa-wysiwyg-bg, #fff);
+  overflow: hidden;
+
+  &.fa-wysiwyg--focused {
+    border-color: var(--color-primary, hsl(218.1, 100%, 58%));
+    box-shadow: var(--fa-wysiwyg-focus-ring, 1px solid var(--color-primary, hsl(218.1, 100%, 58%)));
+  }
+
+  &.fa-wysiwyg--disabled {
+    background: hsl(0, 0%, 97%);
+    opacity: 0.75;
+  }
+}
+
+// --- Toolbar ---------------------------------------------------------------
+
+// The toolbar keeps to a single row: when it outgrows its container it scrolls
+// sideways instead of wrapping, so the editor's height never depends on how
+// narrow the field is. The panels are portaled to <body>, so nothing they
+// open gets clipped by this scroll container.
+.fa-wysiwyg__toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--fa-wysiwyg-spacing-tiny, 0.18em);
+  padding: var(--fa-wysiwyg-spacing-small, 0.3em);
+  background: var(--fa-wysiwyg-toolbar-bg, hsl(0, 0%, 98%));
+  border-bottom: 1px solid var(--fa-wysiwyg-border, hsl(220, 6%, 81%));
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--fa-wysiwyg-scrollbar, hsl(220, 6%, 70%)) transparent;
+
+  // Buttons keep their natural width: squeezing them is what the scroll is
+  // there to avoid.
+  > * {
+    flex: none;
+  }
+
+  &::-webkit-scrollbar {
+    height: var(--fa-wysiwyg-scrollbar-size, 0.5em);
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--fa-wysiwyg-scrollbar, hsl(220, 6%, 70%));
+  }
+}
+
+.fa-wysiwyg__separator {
+  width: 1px;
+  align-self: stretch;
+  margin: var(--fa-wysiwyg-spacing-tiny, 0.18em) var(--fa-wysiwyg-spacing-small, 0.3em);
+  background: var(--fa-wysiwyg-border, hsl(220, 6%, 81%));
+}
+
+.fa-wysiwyg__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--fa-wysiwyg-spacing-small, 0.3em);
+  min-width: var(--fa-wysiwyg-btn-size, 2.3em);
+  height: var(--fa-wysiwyg-btn-size, 2.3em);
+  padding: 0 var(--fa-wysiwyg-spacing-small, 0.3em);
+  border: 1px solid transparent;
+  border-radius: var(--fa-wysiwyg-radius, var(--radius, 2px));
+  background: transparent;
+  color: var(--fa-wysiwyg-text, hsl(0, 0%, 20%));
+  font-size: 1.2em;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease-in-out;
+
+  &:hover:not(:disabled) {
+    background: var(--fa-wysiwyg-btn-hover-bg, hsl(0, 0%, 94.1%));
+  }
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-primary, hsl(218.1, 100%, 58%));
+  }
+  &:disabled {
+    color: hsl(0, 0%, 70%);
+    cursor: default;
+  }
+
+  &.fa-wysiwyg__btn--on {
+    background: var(--fa-wysiwyg-btn-on-bg, hsl(212, 100%, 97.1%));
+    color: var(--fa-wysiwyg-btn-on-text, hsl(218.1, 100%, 58%));
+  }
+}
+
+.fa-wysiwyg__btn--dropdown {
+  padding: 0 var(--fa-wysiwyg-spacing-small, 0.3em) 0 var(--fa-wysiwyg-spacing, 0.6em);
+}
+
+.fa-wysiwyg__btn-label {
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+.fa-wysiwyg__caret {
+  font-size: 0.6em;
+  opacity: 0.7;
+}
+
+// Icons are inline <svg>, drawn by the package itself: no icon font, no CDN.
+// Sized like a glyph (height 1em, width from the artwork's own aspect ratio)
+// and painted with `currentColor`, so they follow the button's font-size and
+// color the way a font icon used to.
+.fa-wysiwyg__icon {
+  display: inline-block;
+  flex: none;
+  height: 1em;
+  width: auto;
+  overflow: visible;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+
+.fa-wysiwyg__dropdown {
+  display: inline-flex;
+}
+
+// --- Editable area ---------------------------------------------------------
+//
+// The editable area defines no content styles of its own: it inherits the same
+// ones the application applies when rendering the HTML with
+// dangerouslySetInnerHTML, so what you see while typing is what you get
+// afterwards. Only the font-size is reset, because the container drops it to
+// 10px to size the toolbar.
+
+.fa-wysiwyg__content {
+  position: relative;
+  padding: var(--fa-wysiwyg-padding, 0.5em 1em);
+  min-height: var(--fa-wysiwyg-min-height, 100px);
+  height: var(--fa-wysiwyg-height, auto);
+  overflow-y: auto;
+  font-size: var(--font-size, 14px);
+  font-family: var(--font-family, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif);
+  color: var(--body-text, hsl(0, 0%, 37%));
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  // Drawn inside the first block, not on the container: that block is where
+  // the caret sits, and its own margin (the host's `p` margin, or the
+  // browser's 1em) would otherwise leave the caret below the placeholder.
+  // `attr()` cannot read the container's attribute from a child, so the text
+  // comes in through a custom property, already quoted as a CSS string.
+  &.fa-wysiwyg__content--empty > :first-child::before {
+    content: var(--fa-wysiwyg-placeholder, '');
+    position: absolute;
+    color: hsl(0, 0%, 60%);
+    pointer-events: none;
+  }
+}
+
+// --- Styles for the generated content --------------------------------------
+//
+// Deliberately unscoped: the editor's HTML is rendered with
+// dangerouslySetInnerHTML elsewhere in the application, and it has to look the
+// same there as it does while typing.
+// Scoping these to the editor is what makes a document change appearance the
+// moment it leaves it.
+
+.text-tiny {
+  font-size: 0.7em;
+}
+.text-small {
+  font-size: 0.85em;
+}
+.text-big {
+  font-size: 1.4em;
+}
+.text-huge {
+  font-size: 1.8em;
+}
+
+.mention {
+  background: var(--fa-wysiwyg-mention-background, hsla(341, 100%, 30%, 0.1));
+  color: var(--fa-wysiwyg-mention-text, hsl(341, 100%, 30%));
+}
+
+// Tables. Styled through `figure.table` and never through a bare `.table`,
+// because that class is also Bootstrap's: without a more specific rule the
+// editor's HTML falls into Bootstrap's `.table` and ends up with the inner table
+// shrunk to its content and horizontal rules instead of a grid.
+figure.table {
+  display: table;
+  width: 100%;
+  margin: 0.9em auto;
+
+  table {
+    width: 100%;
+    height: 100%;
+    border: 1px double hsl(0, 0%, 70%);
+    border-collapse: collapse;
+    border-spacing: 0;
+    overflow: hidden;
+  }
+
+  td,
+  th {
+    min-width: 2em;
+    padding: 0.4em;
+    border: 1px solid hsl(0, 0%, 75%);
+    // Bootstrap forces `top`; the browser default is what we want.
+    vertical-align: inherit;
+    overflow-wrap: break-word;
+    position: relative;
+  }
+
+  th {
+    background: hsla(0, 0%, 0%, 5%);
+    font-weight: bold;
+    text-align: left;
+  }
+}
+
+// Hover outline: while editing you need to see where the table starts and ends.
+// Only inside the editor, never when rendering the HTML with
+// dangerouslySetInnerHTML.
+.fa-wysiwyg__content figure.table {
+  outline: 3px solid transparent;
+  transition: outline-color 200ms ease;
+
+  &:hover {
+    outline-color: hsl(43, 100%, 62%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fa-wysiwyg__content figure.table {
+    transition: none;
+  }
+}
+
+// --- Panels and balloons ---------------------------------------------------
+//
+// Rendered into <body> through createPortal, with position:fixed, so they
+// cannot nest under .fa-wysiwyg. The high z-index is what makes them work
+// inside a modal.
+
+.fa-wysiwyg-panel,
+.fa-wysiwyg-balloon {
+  // Portaled to <body>, these do not inherit the tokens declared on
+  // .fa-wysiwyg. They do not redeclare them either: every use in this file
+  // carries its own fallback, so an override on :root reaches here too.
+  position: fixed;
+  z-index: 9999999;
+  font-size: var(--fa-wysiwyg-font-size, 10px);
+  background: var(--fa-wysiwyg-bg, #fff);
+  border: 1px solid var(--fa-wysiwyg-border, hsl(220, 6%, 81%));
+  border-radius: var(--fa-wysiwyg-radius, var(--radius, 2px));
+  box-shadow: var(--fa-wysiwyg-shadow, 0 1px 2px 1px hsla(220, 6%, 10%, 0.15));
+  color: var(--fa-wysiwyg-text, hsl(0, 0%, 20%));
+}
+
+.fa-wysiwyg-panel {
+  max-height: 320px;
+  overflow-y: auto;
+  min-width: 4em;
+
+  &.fa-wysiwyg-panel--wide {
+    min-width: 14em;
+  }
+}
+
+.fa-wysiwyg-panel__list {
+  list-style: none;
+  margin: 0;
+  padding: var(--fa-wysiwyg-spacing-tiny, 0.18em) 0;
+}
+
+.fa-wysiwyg-panel__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  width: 100%;
+  padding: 0.4em 0.9em;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 1.2em;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    background: hsl(0, 0%, 94.1%);
+  }
+
+  &.fa-wysiwyg-panel__item--on {
+    background: hsl(212, 100%, 97.1%);
+    color: hsl(218.1, 100%, 58%);
+  }
+
+  // Inside a menu the icons form a column, so they get a fixed square box:
+  // the viewBox keeps the artwork centered in it, never stretched.
+  .fa-wysiwyg__icon {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+// Heading options preview themselves in their own typeface.
+.fa-wysiwyg-panel__item-text {
+  margin: 0;
+}
+
+// Sizes for the heading dropdown only. Headings in the content are left to the
+// host stylesheet.
+h2.fa-wysiwyg-panel__item-text {
+  font-size: 17px;
+  font-weight: bold;
+}
+h3.fa-wysiwyg-panel__item-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+h4.fa-wysiwyg-panel__item-text {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+// Balloon arrow: two pseudo-elements, the back one paints the border.
+.fa-wysiwyg-balloon {
+  padding: 0.4em;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: var(--fa-wysiwyg-arrow-left, 50%);
+    margin-left: -0.5em;
+    border: 0.5em solid transparent;
+  }
+
+  &.fa-wysiwyg-balloon--south {
+    &::before {
+      top: -1em;
+      border-bottom-color: hsl(220, 6%, 81%);
+    }
+    &::after {
+      top: calc(-1em + 1px);
+      border-bottom-color: #fff;
+    }
+  }
+
+  &.fa-wysiwyg-balloon--north {
+    &::before {
+      bottom: -1em;
+      border-top-color: hsl(220, 6%, 81%);
+    }
+    &::after {
+      bottom: calc(-1em + 1px);
+      border-top-color: #fff;
+    }
+  }
+}
+
+// --- Color grid ------------------------------------------------------------
+
+.fa-wysiwyg-color-grid {
+  padding: 0.4em;
+}
+
+.fa-wysiwyg-color-grid__remove {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  width: 100%;
+  padding: 0.4em 0.5em;
+  margin-bottom: 0.3em;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 1.2em;
+  cursor: pointer;
+
+  &:hover {
+    background: hsl(0, 0%, 94.1%);
+  }
+}
+
+.fa-wysiwyg-color-grid__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--fa-wysiwyg-color-columns, 5), 1fr);
+  gap: 0.25em;
+}
+
+.fa-wysiwyg-color-grid__swatch {
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  cursor: pointer;
+
+  &.fa-wysiwyg-color-grid__swatch--bordered {
+    border-color: hsl(0, 0%, 80%);
+  }
+  &.fa-wysiwyg-color-grid__swatch--on {
+    box-shadow: 0 0 0 2px hsl(218.1, 100%, 58%);
+  }
+}
+
+// Shares the look of the "Remove color" button, but sits below the grid.
+.fa-wysiwyg-color-grid__more {
+  @extend .fa-wysiwyg-color-grid__remove;
+
+  margin: 0.3em 0 0 0;
+}
+
+// --- Color picker ----------------------------------------------------------
+//
+// Saturation square plus hue bar: 180x100 for the square, 8px of padding.
+
+.fa-wysiwyg-color-picker {
+  width: 180px;
+  padding: 0.8em;
+}
+
+.fa-wysiwyg-color-picker__area {
+  position: relative;
+  height: 100px;
+  border-radius: var(--fa-wysiwyg-radius, var(--radius, 2px));
+  cursor: crosshair;
+  touch-action: none;
+  background:
+    linear-gradient(to top, hsl(0, 0%, 0%), transparent),
+    linear-gradient(to right, hsl(0, 0%, 100%), hsl(var(--fa-wysiwyg-picker-hue, 0), 100%, 50%));
+}
+
+.fa-wysiwyg-color-picker__hue {
+  position: relative;
+  height: 12px;
+  margin-top: 0.7em;
+  border-radius: 6px;
+  cursor: ew-resize;
+  touch-action: none;
+  background: linear-gradient(
+    to right,
+    hsl(0, 100%, 50%),
+    hsl(60, 100%, 50%),
+    hsl(120, 100%, 50%),
+    hsl(180, 100%, 50%),
+    hsl(240, 100%, 50%),
+    hsl(300, 100%, 50%),
+    hsl(360, 100%, 50%)
+  );
+}
+
+.fa-wysiwyg-color-picker__pointer {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid hsl(0, 0%, 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px hsla(0, 0%, 0%, 0.3);
+  pointer-events: none;
+}
+
+.fa-wysiwyg-color-picker__hue .fa-wysiwyg-color-picker__pointer {
+  top: 50%;
+}
+
+.fa-wysiwyg-color-picker__row {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  margin-top: 0.8em;
+}
+
+.fa-wysiwyg-color-picker__hash {
+  font-size: 1.3em;
+  color: hsl(0, 0%, 60%);
+}
+
+.fa-wysiwyg-color-picker__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.4em 0.6em;
+  border: 1px solid var(--fa-wysiwyg-border, hsl(220, 6%, 81%));
+  border-radius: var(--fa-wysiwyg-radius, var(--radius, 2px));
+  background: var(--fa-wysiwyg-bg, #fff);
+  font-size: 1.2em;
+  font-family: inherit;
+  color: inherit;
+
+  &::placeholder {
+    color: hsl(0, 0%, 60%);
+  }
+  &:focus {
+    outline: none;
+    border-color: hsl(218.1, 100%, 58%);
+    box-shadow: var(--fa-wysiwyg-focus-ring, 1px solid var(--color-primary, hsl(218.1, 100%, 58%)));
+  }
+}
+
+// The two buttons spread across the width: accept in green, cancel in red.
+.fa-wysiwyg-color-picker__actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 0.6em;
+
+  .fa-wysiwyg-color-picker__accept {
+    color: hsl(120, 100%, 27%);
+  }
+  .fa-wysiwyg-color-picker__cancel {
+    color: hsl(15, 100%, 43%);
+  }
+}
+
+// --- Table insertion grid --------------------------------------------------
+
+.fa-wysiwyg-table-grid {
+  padding: 0.5em;
+}
+
+.fa-wysiwyg-table-grid__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--fa-wysiwyg-grid-size, 10), 1fr);
+  gap: 1px;
+}
+
+.fa-wysiwyg-table-grid__cell {
+  width: 1.2em;
+  height: 1.2em;
+  padding: 0;
+  border: 1px solid hsl(0, 0%, 80%);
+  background: #fff;
+  cursor: pointer;
+
+  &.fa-wysiwyg-table-grid__cell--on {
+    border-color: hsl(218.1, 100%, 58%);
+    background: hsl(212, 100%, 90%);
+  }
+}
+
+.fa-wysiwyg-table-grid__label {
+  margin: 0.5em 0 0 0;
+  font-size: 1.1em;
+  text-align: center;
+  color: hsl(0, 0%, 40%);
+}
+
+// --- Link balloon ----------------------------------------------------------
+
+.fa-wysiwyg-link {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  font-size: 1.1em;
+}
+
+.fa-wysiwyg-link__form {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.fa-wysiwyg-link__input {
+  min-width: 18em;
+  height: 2.3em;
+  padding: 0 0.6em;
+  border: 1px solid hsl(220, 6%, 81%);
+  border-radius: var(--radius, 2px);
+  font-size: 1em;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary, hsl(218.1, 100%, 58%));
+  }
+}
+
+.fa-wysiwyg-link__actions {
+  display: flex;
+  gap: 0.2em;
+}
+
+.fa-wysiwyg-link__preview {
+  max-width: 22em;
+  padding: 0 0.4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-primary, hsl(218.1, 100%, 58%));
+}
+
+// --- Table tools -----------------------------------------------------------
+
+.fa-wysiwyg-table-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.2em;
+}
+
+// --- Mentions --------------------------------------------------------------
+
+.fa-wysiwyg-mentions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  min-width: 12em;
+}
+
+.fa-wysiwyg-mentions__item {
+  display: block;
+  width: 100%;
+  padding: 0.4em 0.8em;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 1.2em;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover,
+  &.fa-wysiwyg-mentions__item--on {
+    background: hsl(212, 100%, 97.1%);
+    color: hsl(218.1, 100%, 58%);
+  }
+}

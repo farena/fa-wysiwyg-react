@@ -1,0 +1,223 @@
+// Lab styles. Not part of the package: they only dress the test page so the
+// editor can be looked at in something close to real application conditions.
+
+:root {
+  // The same variables a consuming application would define.
+  // Comment them out to see how fa-wysiwyg looks with no theme at all.
+  --radius: 0.25em;
+  --color-primary: hsl(218.1, 100%, 58%);
+  --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-size: 14px;
+  --body-text: hsl(0, 0%, 30%);
+}
+
+body {
+  margin: 0;
+  background: hsl(0, 0%, 96%);
+  color: var(--body-text);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+}
+
+.lab {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2em 1.5em 4em;
+}
+
+.lab__header {
+  margin-bottom: 1.5em;
+
+  h1 {
+    margin: 0 0 0.2em;
+    font-size: 1.8em;
+  }
+
+  p {
+    margin: 0;
+    max-width: 60ch;
+    color: hsl(0, 0%, 45%);
+  }
+}
+
+.lab__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 1em;
+  font-size: 0.9em;
+
+  select {
+    padding: 0.3em 0.5em;
+    border: 1px solid hsl(0, 0%, 82%);
+    border-radius: var(--radius);
+    background: #fff;
+    font: inherit;
+  }
+}
+
+.lab__grid {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 1.5em;
+  align-items: start;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lab__col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  min-width: 0;
+}
+
+.lab__card {
+  padding: 1.2em;
+  background: #fff;
+  border: 1px solid hsl(0, 0%, 88%);
+  border-radius: var(--radius);
+
+  h2 {
+    margin: 0 0 0.2em;
+    font-size: 1.1em;
+  }
+}
+
+.lab__hint {
+  margin: 0 0 1em;
+  color: hsl(0, 0%, 50%);
+  font-size: 0.9em;
+
+  code {
+    padding: 0 0.3em;
+    background: hsl(0, 0%, 94%);
+    border-radius: 2px;
+  }
+}
+
+.lab__label {
+  display: block;
+  margin: 1.2em 0 0.4em;
+  font-weight: 600;
+  font-size: 0.9em;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
+}
+
+.lab__samples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin-top: 1em;
+}
+
+.lab__btn {
+  padding: 0.4em 0.8em;
+  border: 1px solid hsl(0, 0%, 82%);
+  border-radius: var(--radius);
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85em;
+  cursor: pointer;
+
+  &:hover {
+    background: hsl(0, 0%, 96%);
+  }
+
+  &.lab__btn--danger {
+    border-color: hsl(0, 65%, 70%);
+    color: hsl(0, 65%, 45%);
+  }
+}
+
+// Fixed height, to exercise the editable area's internal scrolling.
+.lab__fixed .fa-wysiwyg__content {
+  --fa-ed-height: 100px;
+}
+
+.lab__scroller {
+  max-height: 320px;
+  padding: 1em;
+  overflow-y: auto;
+  background: hsl(0, 0%, 98%);
+  border: 1px dashed hsl(0, 0%, 80%);
+  border-radius: var(--radius);
+}
+
+.lab__filler {
+  height: 200px;
+  padding: 1em 0;
+  color: hsl(0, 0%, 60%);
+}
+
+.lab__output {
+  max-height: 300px;
+  margin: 0;
+  padding: 0.75em;
+  overflow: auto;
+  background: hsl(0, 0%, 96%);
+  border-radius: var(--radius);
+  font-size: 0.8em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+
+.lab__preview {
+  min-height: 4em;
+  padding: 0.75em;
+  border: 1px dashed hsl(0, 0%, 80%);
+  border-radius: var(--radius);
+}
+
+.lab__verdict {
+  margin: 0 0 0.8em;
+  padding: 0.5em 0.8em;
+  border-radius: var(--radius);
+  font-family: monospace;
+  font-size: 1em;
+
+  &.lab__verdict--ok {
+    background: hsl(120, 60%, 94%);
+    color: hsl(120, 60%, 25%);
+  }
+
+  &.lab__verdict--bad {
+    background: hsl(0, 70%, 95%);
+    color: hsl(0, 70%, 35%);
+  }
+}
+
+.lab__diffs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    margin-bottom: 0.8em;
+  }
+
+  pre {
+    margin: 0.3em 0 0;
+    padding: 0.5em;
+    background: hsl(0, 0%, 96%);
+    border-radius: var(--radius);
+    font-size: 0.75em;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+}
+
+// The editor the round-trip runs in: it needs real layout (ranges depend on
+// it), so it is moved off-screen rather than hidden.
+.lab__probe {
+  position: absolute;
+  left: -99999px;
+  width: 600px;
+}

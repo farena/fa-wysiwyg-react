@@ -1,0 +1,57 @@
+# Publishes the lab to GitHub Pages: https://farena.github.io/fa-wysiwyg-react/
+#
+# `enablement: true` on configure-pages switches Pages to "GitHub Actions" mode
+# through the API, so Settings > Pages does not have to be touched by hand.
+name: Deploy lab to Pages
+
+on:
+  push:
+    branches: ["main"]
+  # Lets it be triggered by hand from the Actions tab.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a newer one cancels the one in progress.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build lab
+        run: npm run build:lab
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: "./dist-lab"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
